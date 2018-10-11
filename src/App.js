@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import "./App.css";
 import Boxes from "./components/boxes/Boxes";
+import Filter from "./components/filter/Filter";
 
 const numberOfCarsInRow = 3;
 
 class App extends Component {
   state = {
     cars: [],
-    requestFailed: false
+    requestFailed: false,
+    filter: ""
   };
 
   componentDidMount() {
@@ -35,11 +37,24 @@ class App extends Component {
       );
   }
 
+  handleSearchUpdate = term => {
+    this.setState({ filter: term });
+  };
+
+  getSearchedCars() {
+    const { cars, filter } = this.state;
+    let searchedCars = cars.filter(c => {
+      return c.name.indexOf(filter) !== -1;
+    });
+
+    return searchedCars;
+  }
+
   getCarsByRow() {
-    const { cars } = this.state;
-    const rows = [...Array(Math.ceil(cars.length / numberOfCarsInRow))];
+    const searchedCars = this.getSearchedCars();
+    const rows = [...Array(Math.ceil(searchedCars.length / numberOfCarsInRow))];
     const carsByRow = rows.map((row, idx) =>
-      cars.slice(
+      searchedCars.slice(
         idx * numberOfCarsInRow,
         idx * numberOfCarsInRow + numberOfCarsInRow
       )
@@ -58,6 +73,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <div>
+          <Filter onSearchUpdated={this.handleSearchUpdate} />
           <Boxes boxes={carsByRow} numberOfCarsInRow={numberOfCarsInRow} />
         </div>
       </React.Fragment>

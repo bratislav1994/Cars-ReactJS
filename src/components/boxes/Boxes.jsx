@@ -4,7 +4,7 @@ import "./Box.css";
 
 class Boxes extends Component {
   getContent = () => {
-    const { boxes, numberOfCarsInRow, onSelect, onDeselect } = this.props;
+    const { boxes, numberOfCarsInRow, onSelection } = this.props;
     const boxWidth = Math.floor(100 / numberOfCarsInRow) + "%";
 
     const content = boxes.map((row, idx) => (
@@ -17,12 +17,7 @@ class Boxes extends Component {
               width: boxWidth
             }}
           >
-            <Car
-              key={car.id}
-              car={car}
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-            />
+            <Car key={car.id} car={car} onSelection={onSelection} />
           </div>
         ))}
       </div>

@@ -30,6 +30,7 @@ class App extends Component {
       .then(
         results => {
           const cars = results.data;
+          cars.map(c => (c.isSelected = false));
           this.setState({ cars });
           // console.log(cars);
         },
@@ -43,11 +44,25 @@ class App extends Component {
     this.setState({ filter: term });
   };
 
+  handleSelection = car => {
+    if (car.isSelected) {
+      this.handleDeselect(car);
+    } else {
+      this.handleSelect(car);
+    }
+  };
+
   handleSelect = car => {
     const tracks = [...this.state.tracks];
     tracks.push({ car });
     tracks.map(t => (t.float = "left"));
-    this.setState({ tracks });
+
+    const cars = [...this.state.cars];
+    const index = cars.indexOf(car);
+    cars[index] = { ...car };
+    cars[index].isSelected = true;
+
+    this.setState({ cars, tracks });
   };
 
   handleDeselect = car => {
@@ -55,7 +70,13 @@ class App extends Component {
     let trackToDelete = tracks.find(t => t.car.id === car.id);
     let index = tracks.indexOf(trackToDelete);
     tracks.splice(index, 1);
-    this.setState({ tracks });
+
+    const cars = [...this.state.cars];
+    const idx = cars.indexOf(car);
+    cars[idx] = { ...car };
+    cars[idx].isSelected = false;
+
+    this.setState({ cars, tracks });
   };
 
   handleStart = () => {
@@ -117,8 +138,7 @@ class App extends Component {
           <Boxes
             boxes={carsByRow}
             numberOfCarsInRow={numberOfCarsInRow}
-            onSelect={this.handleSelect}
-            onDeselect={this.handleDeselect}
+            onSelection={this.handleSelection}
           />
           <Tracks tracks={this.state.tracks} onStart={this.handleStart} />
         </div>

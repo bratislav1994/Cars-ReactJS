@@ -3,8 +3,6 @@ import "./Car.css";
 
 class Car extends Component {
   state = {
-    imageBackgroundColor: "transparent",
-    isChecked: false,
     isMouseOver: false
   };
 
@@ -16,25 +14,13 @@ class Car extends Component {
     this.setState({ isMouseOver: false });
   };
 
-  selectCar = () => {
-    let newColor;
-    let isChecked;
-
-    if (this.state.imageBackgroundColor === "transparent") {
-      newColor = "#999";
-      isChecked = true;
-      this.props.onSelect(this.props.car);
-    } else {
-      newColor = "transparent";
-      isChecked = false;
-      this.props.onDeselect(this.props.car);
-    }
-
-    this.setState({ imageBackgroundColor: newColor, isChecked });
+  selectionCar = () => {
+    this.props.onSelection(this.props.car);
   };
 
   render() {
     const { car } = this.props;
+    const color = car.isSelected ? "#999" : "transparent";
 
     return (
       <div>
@@ -48,7 +34,7 @@ class Car extends Component {
             <div
               onMouseOver={() => this.onMouseOver()}
               onMouseLeave={() => this.onMouseLeave()}
-              onClick={this.selectCar}
+              onClick={this.selectionCar}
               className="flip-box"
             >
               <div className="flip-box-inner">
@@ -60,7 +46,7 @@ class Car extends Component {
                     style={{
                       width: "300px",
                       height: "150px",
-                      backgroundColor: this.state.imageBackgroundColor
+                      backgroundColor: color
                     }}
                   />
                 </div>
@@ -73,7 +59,7 @@ class Car extends Component {
                     style={{
                       width: "300px",
                       height: "150px",
-                      backgroundColor: this.state.imageBackgroundColor
+                      backgroundColor: color
                     }}
                   />
                 </div>
@@ -89,8 +75,8 @@ class Car extends Component {
               )}
               <input
                 type="checkbox"
-                checked={this.state.isChecked}
-                onChange={this.selectCar}
+                checked={car.isSelected}
+                onChange={this.selectionCar}
               />
             </div>
           </div>

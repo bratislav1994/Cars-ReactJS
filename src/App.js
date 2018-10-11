@@ -5,6 +5,7 @@ import Filter from "./components/filter/Filter";
 import Tracks from "./components/tracks/Tracks";
 
 const numberOfCarsInRow = 3;
+const raceLength = 50; // km
 
 class App extends Component {
   state = {
@@ -55,7 +56,7 @@ class App extends Component {
   handleSelect = car => {
     const tracks = [...this.state.tracks];
     tracks.push({ car });
-    tracks.map(t => (t.float = "left"));
+    tracks.map(t => (t.isRaceStarted = false));
 
     const cars = [...this.state.cars];
     const index = cars.indexOf(car);
@@ -70,6 +71,7 @@ class App extends Component {
     let trackToDelete = tracks.find(t => t.car.id === car.id);
     let index = tracks.indexOf(trackToDelete);
     tracks.splice(index, 1);
+    tracks.map(t => (t.isRaceStarted = false));
 
     const cars = [...this.state.cars];
     const idx = cars.indexOf(car);
@@ -81,7 +83,6 @@ class App extends Component {
 
   handleStart = () => {
     const tracks = [...this.state.tracks];
-    tracks.map(t => (t.float = "right"));
     let sortedCarsById = [];
 
     for (let i = 0; i < tracks.length; i++) {
@@ -99,6 +100,12 @@ class App extends Component {
       }
       return car;
     });
+
+    tracks.map(t => {
+      t.animationDuration = (raceLength / t.car.speed) * 10;
+      t.isRaceStarted = true;
+    });
+
     this.setState({ tracks });
   };
 

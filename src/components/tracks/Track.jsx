@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import "./Track.css";
 
 class Track extends Component {
+  state = { showResults: false, first: false };
+
   getColorForRace(position) {
     let color = "";
     if (position === 1) {
@@ -16,9 +19,38 @@ class Track extends Component {
     return color;
   }
 
+  getStyleForCar(track) {
+    let style = {};
+
+    if (track.isRaceStarted) {
+      style = {
+        width: "200px",
+        height: "100px",
+        border: "1px solid black",
+        margin: "10px",
+        animation: "move " + track.animationDuration + "s",
+        animationDirection: "normal",
+        animationFillMode: "forwards",
+        animationTimingFunction:
+          track.animationDuration < 3 ? "linear" : "ease-in",
+        position: "relative"
+      };
+    } else {
+      style = {
+        width: "200px",
+        height: "100px",
+        border: "1px solid black",
+        margin: "10px",
+        position: "relative"
+      };
+    }
+    return style;
+  }
+
   render() {
     const { track } = this.props;
     const positionColor = this.getColorForRace(track.position);
+    let style = this.getStyleForCar(track);
 
     return (
       <div>
@@ -34,13 +66,7 @@ class Track extends Component {
               key={track.car.id}
               src={track.car.image}
               alt=""
-              style={{
-                width: "200px",
-                height: "100px",
-                margin: "10px",
-                border: "1px solid black",
-                float: track.float
-              }}
+              style={style}
             />
           </div>
         </div>
@@ -58,7 +84,7 @@ class Track extends Component {
               fontSize: "30px"
             }}
           >
-            {track.float === "right" ? track.position : ""}
+            {track.isRaceStarted ? track.position : ""}
           </p>
         </div>
       </div>

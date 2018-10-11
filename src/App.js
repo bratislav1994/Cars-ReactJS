@@ -46,6 +46,7 @@ class App extends Component {
   handleSelect = car => {
     const tracks = [...this.state.tracks];
     tracks.push({ car });
+    tracks.map(t => (t.float = "left"));
     this.setState({ tracks });
   };
 
@@ -54,6 +55,29 @@ class App extends Component {
     let trackToDelete = tracks.find(t => t.car.id === car.id);
     let index = tracks.indexOf(trackToDelete);
     tracks.splice(index, 1);
+    this.setState({ tracks });
+  };
+
+  handleStart = () => {
+    const tracks = [...this.state.tracks];
+    tracks.map(t => (t.float = "right"));
+    let sortedCarsById = [];
+
+    for (let i = 0; i < tracks.length; i++) {
+      sortedCarsById.push({ id: tracks[i].car.id, speed: tracks[i].car.speed });
+    }
+
+    sortedCarsById.sort((t1, t2) => t2.speed - t1.speed);
+
+    sortedCarsById.map((car, index) => {
+      for (let i = 0; i < tracks.length; i++) {
+        if (car.id === tracks[i].car.id) {
+          tracks[i].position = index + 1;
+          break;
+        }
+      }
+      return car;
+    });
     this.setState({ tracks });
   };
 
@@ -96,7 +120,7 @@ class App extends Component {
             onSelect={this.handleSelect}
             onDeselect={this.handleDeselect}
           />
-          <Tracks tracks={this.state.tracks} />
+          <Tracks tracks={this.state.tracks} onStart={this.handleStart} />
         </div>
       </React.Fragment>
     );

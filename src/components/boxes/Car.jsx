@@ -23,9 +23,11 @@ class Car extends Component {
     if (this.state.imageBackgroundColor === "transparent") {
       newColor = "#999";
       isChecked = true;
+      this.props.onSelect(this.props.car);
     } else {
       newColor = "transparent";
       isChecked = false;
+      this.props.onDeselect(this.props.car);
     }
 
     this.setState({ imageBackgroundColor: newColor, isChecked });

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Boxes from "./components/boxes/Boxes";
 import Filter from "./components/filter/Filter";
+import Tracks from "./components/tracks/Tracks";
 
 const numberOfCarsInRow = 3;
 
@@ -9,7 +10,8 @@ class App extends Component {
   state = {
     cars: [],
     requestFailed: false,
-    filter: ""
+    filter: "",
+    tracks: []
   };
 
   componentDidMount() {
@@ -39,6 +41,20 @@ class App extends Component {
 
   handleSearchUpdate = term => {
     this.setState({ filter: term });
+  };
+
+  handleSelect = car => {
+    const tracks = [...this.state.tracks];
+    tracks.push({ car });
+    this.setState({ tracks });
+  };
+
+  handleDeselect = car => {
+    const tracks = [...this.state.tracks];
+    let trackToDelete = tracks.find(t => t.car.id === car.id);
+    let index = tracks.indexOf(trackToDelete);
+    tracks.splice(index, 1);
+    this.setState({ tracks });
   };
 
   getSearchedCars() {
@@ -74,7 +90,13 @@ class App extends Component {
       <React.Fragment>
         <div>
           <Filter onSearchUpdated={this.handleSearchUpdate} />
-          <Boxes boxes={carsByRow} numberOfCarsInRow={numberOfCarsInRow} />
+          <Boxes
+            boxes={carsByRow}
+            numberOfCarsInRow={numberOfCarsInRow}
+            onSelect={this.handleSelect}
+            onDeselect={this.handleDeselect}
+          />
+          <Tracks tracks={this.state.tracks} />
         </div>
       </React.Fragment>
     );
